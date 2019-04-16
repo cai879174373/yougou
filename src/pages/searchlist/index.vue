@@ -1,6 +1,7 @@
 <template>
   <div>
-    <!-- 头部搜索 -->
+    <div class="mytop" :style="{position:isscroll}">
+      <!-- 头部搜索 -->
       <div class="search">
       <div class="search-input">
         <input v-model="query" class="_input" type="text">
@@ -12,7 +13,9 @@
     <div class="tab">
       <div class="tab-item" @click="seletedindex=index" :class="{active:seletedindex==index}" v-for="(item,index) in tablist" :key="index" >{{item}}</div>
     </div>
-    <div class="goods-list">
+    </div>
+    
+    <div class="goods-list" :style="{marginTop: margintop}">
       <div class="item" v-for="(item,index) in datalist" :key='index'>
         <div class="box">
           <div class="left">
@@ -45,7 +48,9 @@ export default {
       pagenum:1,
       pagesize:10,
       query:'',
-      isEnd:false
+      isEnd:false,
+      isscroll:'static',
+      margintop:'0rpx'
     }
   },
   methods: {
@@ -53,11 +58,11 @@ export default {
        wx.showNavigationBarLoading();
         if (this.isEnd) {
         // 提示用户数据已经全部加载
-        wx.showToast({
-          title: '数据已经加载完毕',
-          icon: 'none',
-          duration: 2000
-        })
+        // wx.showToast({
+        //   title: '数据已经加载完毕',
+        //   icon: 'none',
+        //   duration: 2000
+        // })
         return
       }
         // 打开加载动画
@@ -100,6 +105,8 @@ export default {
     }
   },
   mounted() {
+    // this.pagenum=1;
+    // this.datalist=[];
     // 获取数据
     this.getdatalist()
   },
@@ -117,7 +124,20 @@ export default {
     this.datalist=[];
     // 获取数据
     this.getdatalist()
-  }
+  },
+  onUnload(){
+     this.datalist=[];
+  },
+   onPageScroll(scroll){
+    //  console.log(scroll);
+     if(scroll.scrollTop==0){
+   this.isscroll='static'
+     this.margintop='0rpx'
+     }else{
+        this.isscroll='fixed'
+         this.margintop='200rpx'
+     }
+   }
 
 }
 </script>

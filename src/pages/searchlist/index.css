@@ -1,3 +1,10 @@
+.mytop {
+  position: fixed;
+  left: 0rpx;
+  top: 0rpx;
+  width: 100%;
+  height: 200rpx;
+}
 .search {
   padding: 20rpx 16rpx;
   background-color: #eeeeee;
@@ -22,6 +29,7 @@
   height: 100rpx;
   border-bottom: 1px solid #dddddd;
   display: flex;
+  background-color: #fff;
 }
 .tab .tab-item {
   width: 33.33%;
@@ -32,7 +40,8 @@
   color: #eb4450;
 }
 .goods-list {
-  padding: 0 20rpx;
+  margin-top: 200rpx;
+  padding: 20rpx ;
 }
 .goods-list .item {
   height: 260rpx;
