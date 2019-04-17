@@ -1,0 +1,73 @@
+.search {
+    width: 100%;
+    height: 120rpx;
+    display: flex;
+    padding: 30rpx 16rpx;
+    box-sizing: border-box;
+    background-color: #eee;
+    position: relative;
+    .search-input {
+        width: 100%;
+        
+        input {
+            height: 60rpx;
+            background-color: #fff;
+            padding-left: 60rpx;
+        }
+        icon {
+            position: absolute;
+            top: 10rpx;
+            left: 10rpx;
+        }
+        .think {
+            position: absolute;
+            top: 60rpx;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            width: 100%;
+            font-size: 18px;
+            color: #999;
+            padding-left: 40rpx;
+            box-sizing: border-box;
+            line-height: 50rpx;
+            .item {
+                overflow: hidden;/*超出部分隐藏*/
+                white-space: nowrap;/*不换行*/
+                text-overflow:ellipsis;/*超出部分文字以...显示*/
+            }
+        }
+    }
+    .mybtn {
+        margin-left: 80rpx;
+        width: 158rpx;
+        height: 58rpx;
+        border: 1px solid #ccc;
+        text-align: center;
+        border-radius: 4px;
+    }
+}
+.history {
+    padding: 0px 16rpx;
+    .titile {
+        height: 88rpx;
+        line-height: 88rpx;
+        font-size: 20px;
+        display: flex;
+        justify-content: space-between;
+        .clear{
+            margin: 30rpx 14rpx 0 0;
+        }
+    }
+    .his-item {
+        display: flex;
+        flex-wrap: wrap;
+        .item {
+            font-size: 18px;
+            padding: 15rpx 20rpx;
+            background-color: #ddd;
+            margin-right: 20rpx;
+            margin-bottom: 18rpx;
+        }
+    }
+}

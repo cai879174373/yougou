@@ -1,14 +1,14 @@
 <template>
     <div>
          <!-- 搜索框 -->
-    <div class="search">
-      <div class="search-input">
+    <div  class="search">
+      <a href="/pages/search/main" class="search-input">
         <input class="_input" type="text">
         <div class="word">
           <icon type="search" size="20"></icon>
           <div class="text">搜索</div>
         </div>
-      </div>
+      </a>
     </div>
     </div>
 </template>

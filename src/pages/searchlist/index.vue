@@ -2,13 +2,13 @@
   <div>
     <div class="mytop" :style="{position:isscroll}">
       <!-- 头部搜索 -->
-      <div class="search">
-      <div class="search-input">
+      <div  class="search">
+      <a href="/pages/search/main" class="search-input">
         <input v-model="query" class="_input" type="text">
         <div class="word">
           <icon type="search" size="20"></icon>
         </div>
-      </div>
+      </a>
     </div>
     <div class="tab">
       <div class="tab-item" @click="seletedindex=index" :class="{active:seletedindex==index}" v-for="(item,index) in tablist" :key="index" >{{item}}</div>
@@ -16,7 +16,7 @@
     </div>
     
     <div class="goods-list" :style="{marginTop: margintop}">
-      <div class="item" v-for="(item,index) in datalist" :key='index'>
+      <a :href="'/pages/detail/main?id='+item.goods_id" class="item" v-for="(item,index) in datalist" :key='index'>
         <div class="box">
           <div class="left">
             <image :src="item.goods_small_logo"></image>
@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 </template>
@@ -44,7 +44,6 @@ export default {
       seletedindex:0,
       tablist:['综合','销量','价格'],
       datalist:[],
-
       pagenum:1,
       pagesize:10,
       query:'',
@@ -58,12 +57,12 @@ export default {
        wx.showNavigationBarLoading();
         if (this.isEnd) {
         // 提示用户数据已经全部加载
-        // wx.showToast({
-        //   title: '数据已经加载完毕',
-        //   icon: 'none',
-        //   duration: 2000
-        // })
-        return
+        wx.showToast({
+          title: '数据已经加载完毕',
+          icon: 'none',
+          duration: 2000
+        })
+        return false;
       }
         // 打开加载动画
       wx.showLoading({
@@ -84,10 +83,10 @@ export default {
         wx.hideNavigationBarLoading();
         wx.showToast({
           title: "数据加载完毕!",
-          duration: 2000
+          duration: 1000
         });
         this.isend = true;
-        return;
+        // return false;
       }
       if(this.datalist.length==0){
         this.datalist=res.data.data.goods;
@@ -108,6 +107,7 @@ export default {
     // this.pagenum=1;
     // this.datalist=[];
     // 获取数据
+    this.query = this.$root.$mp.query.query
     this.getdatalist()
   },
   // 上拉刷新
@@ -119,6 +119,8 @@ export default {
   },
   // 下拉刷新
   onPullDownRefresh(){
+    this.selectedIndex = 0;
+    this.isScroll = 'static';
     this.pagenum=1;
     this.isEnd=false;
     this.datalist=[];
@@ -126,7 +128,10 @@ export default {
     this.getdatalist()
   },
   onUnload(){
+     this.isEnd=false;
+     this.pagenum = 1
      this.datalist=[];
+    
   },
    onPageScroll(scroll){
     //  console.log(scroll);

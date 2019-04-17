@@ -17,7 +17,7 @@
     <div class="cate">
       <ul>
         <li v-for="(item,index) in cateitem" :key="index">
-          <a href="#">
+          <a href="/pages/category/main">
             <image mode="aspectFit"  :src="item.image_src"></image>
           </a>
         </li>
@@ -87,17 +87,18 @@ tophead
     let res = await request(url);
     // console.log(res);
     this.imglist = res.data.data;
+    // console.log(this.imglist);
     // 获取楼层数据
     var urlfloor="https://itjustfun.cn/api/public/v1/home/floordata"
     let resfloor = await request(urlfloor);
-    // console.log(resfloor);
+    console.log(resfloor);
     this.floorlist=resfloor.data.data;
-    // console.log(this.floorlist);
+    console.log(this.floorlist);
     var urlcate="https://itjustfun.cn/api/public/v1/home/catitems"
     let rescate = await request(urlcate);
-    console.log(rescate);
+    // console.log(rescate);
     this.cateitem=rescate.data.data;
-    console.log(this.cateitem);
+    // console.log(this.cateitem);
   }
 };
 </script>
