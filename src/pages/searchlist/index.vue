@@ -78,7 +78,7 @@ export default {
         pagesize:this.pagesize
       })
       console.log(res);
-       if (res.data.data.goods.length == 0) {
+       if (res.data.message.goods.length == 0) {
           // 关闭导航中的加载框
         wx.hideNavigationBarLoading();
         wx.showToast({
@@ -89,9 +89,9 @@ export default {
         // return false;
       }
       if(this.datalist.length==0){
-        this.datalist=res.data.data.goods;
+        this.datalist=res.data.message.goods;
       }else{
-        this.datalist=this.datalist.concat(res.data.data.goods)
+        this.datalist=this.datalist.concat(res.data.message.goods)
       }
 
       // 关闭加载动画

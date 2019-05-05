@@ -32,7 +32,7 @@
         <span class="iconfont iconGroup-"></span>优购生活馆</div>
       <div class="item" v-for="(value, key) in goodsList" :key="key">
         <div class="check">
-          <icon type="success" size="20" color="red"></icon>
+          <icon type="success" @click="isSeleted(value) " size="20" :color="value.seleted?'red':'gray'"></icon>
         </div>
         <div class="goods">
           <div class="left">
@@ -45,9 +45,9 @@
             <div class="pricenum">
               <div class="price">￥{{value.goods_price}}</div>
               <div class="num">
-                <span>-</span>
-                <span class="index">3</span>
-                <span>+</span>
+                <span @click="sub(value)">-</span>
+                <span class="index">{{value.num}}</span>
+                <span @click="add(value)">+</span>
               </div>
             </div>
           </div>
@@ -56,7 +56,7 @@
     </div>
     <div class="total">
       <div class="check">
-        <icon type="success" size="20" color="red"></icon>
+        <icon type="success" size="20" :color="seletedAll?'red':'gray'" @click="seleAll"></icon>
       </div>
       <div class="word">全选</div>
       <div class="totalp">
@@ -68,13 +68,14 @@
         </div>
       </div>
       <div class="pay">
-        <button>结算</button>
+        <button @click="jiesuan">结算({{totalCount}})</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import request from '../../utils/myrequest.js'
 export default {
   data() {
     return {
@@ -98,7 +99,126 @@ export default {
           }
         }
       })
+    },
+
+    // 选中按钮
+    isSeleted(value){
+      value.seleted=! value.seleted;
+      try {
+         wx.setStorageSync('goods',this.goodsList);
+      } catch (error) {
+        console.log(error);
+      }
+     
+    },
+    //减少商品数量
+    sub(value){
+      value.num--;
+      if( value.num==0){
+        wx.showModal({
+        title: '警告!!!',
+        content: '是否删除商品',
+        success:res=> {
+        if (res.confirm) {
+        delete this.goodsList[value.goods_id];
+        wx.setStorageSync('goods',this.goodsList);
+        this.goodsList={...this.goodsList}
+        } else if (res.cancel) {
+          value.num=1;
+          wx.setStorageSync('goods',this.goodsList)
     }
+  }
+})
+      }
+    },
+
+    // 添加商品数量
+    add(value){
+       value.num++;
+       try {
+          wx.setStorageSync('goods',this.goodsList);
+       } catch (error) {
+         console.log(error);
+       }
+    },
+    // 全选按钮
+    seleAll(){
+      var selet=!this.seletedAll;
+       Object.keys(this.goodsList).forEach(v=>{
+      this.goodsList[v].seleted=selet
+      })
+
+    },
+    setobj(){
+        var orderObj = {
+      }
+      // 设置订单对象的总价
+      orderObj.order_price = this.totalPrice
+      // 设置订单对象的地址
+      orderObj.consignee_addr = this.detailAddree
+      // 设置订单对象的详情
+      var orderList = []
+      // 设置订单对象的 goods属性
+      var goods = []
+      Object.keys(this.goodsList).forEach(v => {
+        var obj = this.goodsList[v]
+        // 判断是否选中
+        if (obj.selected) {
+          // 创建 order_detail
+          var orderItem = {}
+          orderItem.goods_id = obj.goods_id
+          orderItem.goods_name = obj.goods_name
+          orderItem.goods_price = obj.goods_price
+          orderItem.goods_small_logo = obj.goods_small_logo
+          orderItem.counts = obj.num
+          orderItem.selectStatus = obj.selected
+          orderList.push(orderItem)
+          // 创建 goods
+          var goodsObj = {}
+          goodsObj.goods_id = obj.goods_id
+          goodsObj.goods_number = obj.goods_number
+          goodsObj.goods_price = obj.goods_price
+          goods.push(goodsObj)
+        }
+      })
+      orderObj.order_detail = JSON.stringify(orderList)
+      orderObj.goods = goods
+      // console.log(orderObj)
+    },
+    // 结算按钮
+   async jiesuan(){
+     var url = 'https://itjustfun.cn/api/public/v1/my/orders/create'
+      var orderObj = this.setobj()
+      // 验证用户是否登录：登录的令牌会放到 straoge 中
+      var token = wx.getStorageSync('token')
+      // 判断
+      if (!token) {
+        wx.showToast({
+          title: '您还没有登录，马上进入登录页面',
+          icon: 'none',
+          duration: 2000
+        })
+        setTimeout(function() {
+          // 跳转到登录页面
+          wx.navigateTo({
+            url: '/pages/login/main'
+          })
+        }, 1000)
+        return
+      }
+      // 将参数提交到服务器
+      var res = await request.auth(url, orderObj, {
+        Authorization: wx.getStorageSync('token')
+      })
+      // 将订单编号保存起来
+      var number = res.data.data.order_number
+      // 保存到 storage 中
+      wx.setStorageSync('number', number)
+      // 跳转到订单页面
+      wx.navigateTo({
+        url: '/pages/order/main'
+      })
+   }
   },
   computed: {
     // 详细地址信息
@@ -115,11 +235,34 @@ export default {
       var sum = 0
       // 遍历一个对象
       Object.keys(this.goodsList).forEach(v=> {
-        sum += this.goodsList[v].goods_price
+        //判断选中状态的总金额
+        if( this.goodsList[v].seleted){
+          sum += this.goodsList[v].goods_price*this.goodsList[v].num
+        }
+       
       })
       return sum
     
-    }
+    },
+    seletedAll:function(){
+      var bool=true;
+      Object.keys(this.goodsList).forEach(v=>{
+        if(!this.goodsList[v].seleted){
+          bool=false;
+          return;
+        }
+      })
+      return bool;
+    },
+    totalCount: function() {
+      var index = 0;
+      Object.keys(this.goodsList).forEach(v => {
+        if (this.goodsList[v].seleted) {
+          index++
+        }
+      })
+      return index
+    },
   },
   onShow() {
     // 动态获取收货地址/

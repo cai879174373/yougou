@@ -86,18 +86,18 @@ tophead
     var url = "https://itjustfun.cn/api/public/v1/home/swiperdata";
     let res = await request(url);
     // console.log(res);
-    this.imglist = res.data.data;
+    this.imglist = res.data.message;
     // console.log(this.imglist);
     // 获取楼层数据
     var urlfloor="https://itjustfun.cn/api/public/v1/home/floordata"
     let resfloor = await request(urlfloor);
-    console.log(resfloor);
-    this.floorlist=resfloor.data.data;
-    console.log(this.floorlist);
+    // console.log(resfloor);
+    this.floorlist=resfloor.data.message;
+    // console.log(this.floorlist);
     var urlcate="https://itjustfun.cn/api/public/v1/home/catitems"
     let rescate = await request(urlcate);
     // console.log(rescate);
-    this.cateitem=rescate.data.data;
+    this.cateitem=rescate.data.message;
     // console.log(this.cateitem);
   }
 };

@@ -56,8 +56,8 @@ methods: {
 async mounted() {
   var url='https://itjustfun.cn/api/public/v1/categories'
   var res=await request(url)
-  // console.log(res);
-  this.menulist=res.data.data;
+  console.log(res);
+  this.menulist=res.data.message;
   this.rightlist=this.menulist[this.seletedindex].children;
   console.log(this.menulist);
   

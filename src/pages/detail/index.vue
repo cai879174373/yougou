@@ -60,13 +60,19 @@ export default {
       goods_id: this.goods_id
     });
     console.log(res);
-    this.detailObj = res.data.data;
+    this.detailObj = res.data.message;
     console.log(this.detailObj);
  
   },
   methods: {
     addcart(){
-   this.goodslist[this.detailObj.goods_id] = this.detailObj;
+  
+  //  购物车按钮选中状态
+   this.detailObj.seleted=true;
+   //购物车商品数量
+   this.detailObj.num=1;
+   
+    this.goodslist[this.detailObj.goods_id] = this.detailObj;
     // 设置到setStorageSync本地存储里面
     try {
       wx.setStorageSync("goods", this.goodslist);
@@ -86,7 +92,7 @@ export default {
     }
   },
   onShareAppMessage(res) {
-    console.log(res);
+    // console.log(res);
     return {
       title: "点进去看看!",
       path: "/pages/detail/main?goods_id=" + this.goods_id,
